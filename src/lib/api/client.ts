@@ -93,6 +93,65 @@ class StorefrontApiClient {
   async getConfig(): Promise<StorefrontConfig> {
     return this.request<StorefrontConfig>("/storefront/config/");
   }
+
+  // Customer Authentication & Account
+  async register(payload: import("@/types/api").RegisterPayload): Promise<import("@/types/api").AuthResponse> {
+    return this.request<import("@/types/api").AuthResponse>("/auth/register/", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async login(payload: import("@/types/api").LoginPayload): Promise<import("@/types/api").AuthResponse> {
+    return this.request<import("@/types/api").AuthResponse>("/auth/login/", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async refresh(refreshToken: string): Promise<import("@/types/api").TokenRefreshResponse> {
+    return this.request<import("@/types/api").TokenRefreshResponse>("/auth/refresh/", {
+      method: "POST",
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+  }
+
+  async logout(refreshToken?: string): Promise<{ status: string }> {
+    return this.request<{ status: string }>("/auth/logout/", {
+      method: "POST",
+      body: JSON.stringify({ refresh: refreshToken || "" }),
+    });
+  }
+
+  async getMe(): Promise<import("@/types/api").UserProfile> {
+    return this.request<import("@/types/api").UserProfile>("/customer/me/");
+  }
+
+  // Catalog endpoints
+  async getCategories(): Promise<import("@/types/catalog").Category[]> {
+    return this.request<import("@/types/catalog").Category[]>("/storefront/categories/");
+  }
+
+  async getCategory(slug: string): Promise<import("@/types/catalog").Category> {
+    return this.request<import("@/types/catalog").Category>(`/storefront/categories/${encodeURIComponent(slug)}/`);
+  }
+
+  async getProducts(params?: import("@/types/catalog").ProductListParams): Promise<import("@/types/catalog").PaginatedProducts> {
+    const searchParams = new URLSearchParams();
+    if (params?.category) searchParams.set("category", params.category);
+    if (params?.ordering) searchParams.set("ordering", params.ordering);
+    if (params?.page) searchParams.set("page", params.page.toString());
+    if (params?.page_size) searchParams.set("page_size", params.page_size.toString());
+
+    const qs = searchParams.toString();
+    const endpoint = qs ? `/storefront/products/?${qs}` : "/storefront/products/";
+    return this.request<import("@/types/catalog").PaginatedProducts>(endpoint);
+  }
+
+  async getProduct(slug: string): Promise<import("@/types/catalog").ProductDetail> {
+    return this.request<import("@/types/catalog").ProductDetail>(`/storefront/products/${encodeURIComponent(slug)}/`);
+  }
 }
 
 export const api = new StorefrontApiClient();
+
