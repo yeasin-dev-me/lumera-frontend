@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api/client";
+import { useCart } from "@/lib/cart/cart-context";
 import { ProductDetail } from "@/types/catalog";
 import { Badge } from "@/components/ui/Badge";
 import { Alert } from "@/components/ui/Alert";
@@ -15,17 +16,61 @@ import {
   ArrowLeft,
   Loader2,
   ShieldCheck,
+  ShoppingBag,
+  Heart,
 } from "lucide-react";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
 
+  const { addToCart, toggleWishlist, isInWishlist } = useCart();
+
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [activeImage, setActiveImage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState<boolean>(false);
+
+  // Cart & Wishlist state
+  const [quantity, setQuantity] = useState<number>(1);
+  const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [addSuccess, setAddSuccess] = useState<boolean>(false);
+  const [isWishlisting, setIsWishlisting] = useState<boolean>(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const inWishlist = product ? isInWishlist(product.public_id) : false;
+
+  async function handleAddToCart() {
+    if (!product || !product.is_in_stock || isAdding) return;
+    setIsAdding(true);
+    setActionError(null);
+    setAddSuccess(false);
+    try {
+      const success = await addToCart(product.public_id, quantity);
+      if (success) {
+        setAddSuccess(true);
+        setTimeout(() => setAddSuccess(false), 3000);
+      }
+    } catch (err: any) {
+      setActionError(err.message || "Failed to add product to cart.");
+    } finally {
+      setIsAdding(false);
+    }
+  }
+
+  async function handleToggleWishlist() {
+    if (!product || isWishlisting) return;
+    setIsWishlisting(true);
+    setActionError(null);
+    try {
+      await toggleWishlist(product.public_id);
+    } catch (err: any) {
+      setActionError(err.message || "Failed to update wishlist.");
+    } finally {
+      setIsWishlisting(false);
+    }
+  }
 
   useEffect(() => {
     if (!slug) return;
@@ -235,8 +280,85 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
+          {/* Cart & Wishlist Actions */}
+          <div className="mt-8 pt-6 border-t border-border/70 space-y-4">
+            {actionError && (
+              <Alert variant="danger" title="Order Note">
+                {actionError}
+              </Alert>
+            )}
+
+            {addSuccess && (
+              <Alert variant="success">
+                Successfully added to your cart!
+              </Alert>
+            )}
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              {/* Quantity selector */}
+              <div className="flex items-center border border-border rounded-full bg-background p-1 w-fit">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1 || !product.is_in_stock}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Decrease quantity"
+                >
+                  -
+                </button>
+                <span className="w-10 text-center font-mono text-sm font-semibold">
+                  {quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => Math.min(Math.min(20, product.stock_quantity), q + 1))}
+                  disabled={quantity >= product.stock_quantity || quantity >= 20 || !product.is_in_stock}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
+
+              {/* Add to Cart button */}
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                disabled={!product.is_in_stock || isAdding}
+                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-lumera-primary text-white text-sm font-semibold hover:bg-lumera-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+              >
+                {isAdding ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Adding to Cart...</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>{product.is_in_stock ? "Add to Cart" : "Out of Stock"}</span>
+                  </>
+                )}
+              </button>
+
+              {/* Wishlist toggle */}
+              <button
+                type="button"
+                onClick={handleToggleWishlist}
+                disabled={isWishlisting}
+                className={`p-3 rounded-full border transition-all ${
+                  inWishlist
+                    ? "bg-rose-50 text-rose-600 border-rose-200"
+                    : "border-border text-lumera-text-muted hover:text-rose-500 hover:bg-muted"
+                }`}
+                title={inWishlist ? "Saved in Wishlist" : "Save to Wishlist"}
+              >
+                <Heart className={`w-5 h-5 ${inWishlist ? "fill-rose-500 text-rose-500" : ""}`} />
+              </button>
+            </div>
+          </div>
+
           {/* Trust Guarantees */}
-          <div className="mt-10 rounded-2xl bg-muted/40 border border-border/60 p-5 flex flex-col gap-3 text-xs text-lumera-text-muted">
+          <div className="mt-8 rounded-2xl bg-muted/40 border border-border/60 p-5 flex flex-col gap-3 text-xs text-lumera-text-muted">
             <div className="flex items-center gap-2.5">
               <ShieldCheck className="w-4 h-4 text-lumera-primary" />
               <span className="text-foreground font-medium">Dermatologist tested & cruelty-free</span>

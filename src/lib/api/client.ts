@@ -151,6 +151,55 @@ class StorefrontApiClient {
   async getProduct(slug: string): Promise<import("@/types/catalog").ProductDetail> {
     return this.request<import("@/types/catalog").ProductDetail>(`/storefront/products/${encodeURIComponent(slug)}/`);
   }
+
+  // Cart endpoints (ADR-0012)
+  async getCart(): Promise<import("@/types/cart").Cart> {
+    return this.request<import("@/types/cart").Cart>("/customer/cart/");
+  }
+
+  async addToCart(productId: string, quantity: number = 1): Promise<import("@/types/cart").Cart> {
+    return this.request<import("@/types/cart").Cart>("/customer/cart/items/", {
+      method: "POST",
+      body: JSON.stringify({ product_id: productId, quantity }),
+    });
+  }
+
+  async updateCartItem(productId: string, quantity: number): Promise<import("@/types/cart").Cart> {
+    return this.request<import("@/types/cart").Cart>(`/customer/cart/items/${encodeURIComponent(productId)}/`, {
+      method: "PATCH",
+      body: JSON.stringify({ quantity }),
+    });
+  }
+
+  async removeCartItem(productId: string): Promise<void> {
+    return this.request<void>(`/customer/cart/items/${encodeURIComponent(productId)}/`, {
+      method: "DELETE",
+    });
+  }
+
+  async clearCart(): Promise<void> {
+    return this.request<void>("/customer/cart/", {
+      method: "DELETE",
+    });
+  }
+
+  // Wishlist endpoints (ADR-0012)
+  async getWishlist(): Promise<import("@/types/cart").Wishlist> {
+    return this.request<import("@/types/cart").Wishlist>("/customer/wishlist/");
+  }
+
+  async addToWishlist(productId: string): Promise<import("@/types/cart").Wishlist> {
+    return this.request<import("@/types/cart").Wishlist>("/customer/wishlist/items/", {
+      method: "POST",
+      body: JSON.stringify({ product_id: productId }),
+    });
+  }
+
+  async removeFromWishlist(productId: string): Promise<void> {
+    return this.request<void>(`/customer/wishlist/items/${encodeURIComponent(productId)}/`, {
+      method: "DELETE",
+    });
+  }
 }
 
 export const api = new StorefrontApiClient();
