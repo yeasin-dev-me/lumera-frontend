@@ -361,19 +361,31 @@ export default function CartPage() {
                 </div>
               </dl>
 
-              {/* Checkout Button: Intentionally marked not implemented per Step 5 boundaries */}
+              {/* Checkout Button (Activated in Step 6) */}
               <div className="mt-8 space-y-3">
-                <Button
-                  className="w-full py-3.5 text-sm font-semibold rounded-full justify-center gap-2 opacity-90 cursor-not-allowed"
-                  disabled
-                  title="Checkout will be activated in Step 6"
-                >
-                  <span>Proceed to Checkout</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-                <p className="text-center text-[11px] text-lumera-text-muted">
-                  🔒 Checkout & Order Creation will be implemented in Step 6.
-                </p>
+                <Link href={cart?.has_unavailable_items || isEmpty ? "#" : "/checkout"}>
+                  <Button
+                    className="w-full py-3.5 text-sm font-semibold rounded-full justify-center gap-2"
+                    disabled={isEmpty || cart?.has_unavailable_items || isCartActionLoading}
+                    title={
+                      cart?.has_unavailable_items
+                        ? "Please remove unavailable items before checkout"
+                        : "Proceed to Checkout"
+                    }
+                  >
+                    <span>Proceed to Checkout</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+                {cart?.has_unavailable_items ? (
+                  <p className="text-center text-[11px] text-rose-600">
+                    ⚠️ Please remove unavailable or out-of-stock items before checking out.
+                  </p>
+                ) : (
+                  <p className="text-center text-[11px] text-lumera-text-muted">
+                    🔒 Secure checkout with authoritative prices and real-time inventory validation.
+                  </p>
+                )}
               </div>
 
               {/* Security badges */}

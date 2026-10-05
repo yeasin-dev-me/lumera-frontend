@@ -200,6 +200,26 @@ class StorefrontApiClient {
       method: "DELETE",
     });
   }
+
+  // Checkout & Orders (ADR-0013)
+  async getCheckoutPreview(): Promise<import("@/types/order").CheckoutPreview> {
+    return this.request<import("@/types/order").CheckoutPreview>("/customer/checkout/");
+  }
+
+  async createOrder(data: import("@/types/order").OrderCreateInput): Promise<import("@/types/order").OrderDetail> {
+    return this.request<import("@/types/order").OrderDetail>("/customer/orders/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getCustomerOrders(page: number = 1): Promise<import("@/types/api").PaginatedResponse<import("@/types/order").OrderListItem>> {
+    return this.request<import("@/types/api").PaginatedResponse<import("@/types/order").OrderListItem>>(`/customer/orders/?page=${page}`);
+  }
+
+  async getCustomerOrder(publicId: string): Promise<import("@/types/order").OrderDetail> {
+    return this.request<import("@/types/order").OrderDetail>(`/customer/orders/${encodeURIComponent(publicId)}/`);
+  }
 }
 
 export const api = new StorefrontApiClient();
