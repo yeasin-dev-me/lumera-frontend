@@ -11,7 +11,17 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
-import { ArrowLeft, Package, ShoppingBag, Truck, Clock } from "lucide-react";
+import {
+  ArrowLeft,
+  Package,
+  ShoppingBag,
+  Truck,
+  CreditCard,
+  CheckCircle2,
+  AlertTriangle,
+  RotateCw,
+  ExternalLink,
+} from "lucide-react";
 
 export default function CustomerOrderDetailPage() {
   const params = useParams();
@@ -21,27 +31,19 @@ export default function CustomerOrderDetailPage() {
   const orderId = typeof params?.id === "string" ? params.id : "";
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [initiatingPayment, setInitiatingPayment] = useState<boolean>(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-
+  const fetchOrder = React.useCallback(() => {
     if (!orderId) return;
-
-    let isMounted = true;
     setLoading(true);
-
     api
       .getCustomerOrder(orderId)
       .then((data) => {
-        if (!isMounted) return;
         setOrder(data);
       })
       .catch((err: unknown) => {
-        if (!isMounted) return;
         if (err instanceof ApiError) {
           setError(err.message);
         } else {
@@ -49,13 +51,43 @@ export default function CustomerOrderDetailPage() {
         }
       })
       .finally(() => {
-        if (isMounted) setLoading(false);
+        setLoading(false);
       });
+  }, [orderId]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [orderId, isAuthenticated, authLoading, router]);
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
+    if (orderId) {
+      fetchOrder();
+    }
+  }, [orderId, isAuthenticated, authLoading, router, fetchOrder]);
+
+  const handlePayNow = async () => {
+    if (!order) return;
+    setInitiatingPayment(true);
+    setPaymentError(null);
+
+    try {
+      const res = await api.initiatePayment(order.public_id, "sslcommerz");
+      if (res.redirect_url) {
+        window.location.href = res.redirect_url;
+      } else {
+        setPaymentError("Gateway did not return a valid payment URL.");
+        setInitiatingPayment(false);
+      }
+    } catch (err: unknown) {
+      setInitiatingPayment(false);
+      if (err instanceof ApiError) {
+        setPaymentError(err.message);
+      } else {
+        setPaymentError("Failed to initiate payment. Please try again.");
+      }
+    }
+  };
 
   if (authLoading || loading) {
     return (
@@ -81,6 +113,10 @@ export default function CustomerOrderDetailPage() {
     );
   }
 
+  const isPayable =
+    order.payment_status !== "paid" && order.status !== "cancelled";
+  const isPaid = order.payment_status === "paid";
+
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 space-y-6">
       <Link
@@ -99,6 +135,17 @@ export default function CustomerOrderDetailPage() {
               Order #{order.order_number}
             </h1>
             <Badge variant="primary">{order.status}</Badge>
+            <span
+              className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${
+                isPaid
+                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                  : order.payment_status === "failed"
+                  ? "bg-rose-50 text-rose-800 border border-rose-200"
+                  : "bg-amber-50 text-amber-800 border border-amber-200"
+              }`}
+            >
+              Payment: {order.payment_status}
+            </span>
           </div>
           <p className="text-xs text-lumera-text-muted">
             Placed on{" "}
@@ -106,11 +153,91 @@ export default function CustomerOrderDetailPage() {
               month: "long",
               day: "numeric",
               year: "numeric",
-            })}{" "}
-            &bull; Payment: {order.payment_status}
+            })}
           </p>
         </div>
       </div>
+
+      {/* Authoritative Payment Settlement Card */}
+      <Card className="p-6 bg-card border-border">
+        <h2 className="font-serif text-base font-semibold text-foreground mb-3 flex items-center justify-between">
+          <span className="flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-lumera-primary" />
+            <span>Payment Details</span>
+          </span>
+          <span className="text-xs font-mono font-medium text-lumera-text-muted">
+            ${order.total} {order.currency}
+          </span>
+        </h2>
+
+        {paymentError && (
+          <div className="mb-4">
+            <Alert variant="danger" title="Payment Error">
+              {paymentError}
+            </Alert>
+          </div>
+        )}
+
+        {isPaid ? (
+          <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-lg p-3 text-xs text-emerald-900 space-y-1">
+            <div className="flex items-center gap-1.5 font-semibold text-emerald-800">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <span>Payment Verified & Complete</span>
+            </div>
+            {order.payment?.provider_transaction_id && (
+              <p className="text-[11px] font-mono">
+                Transaction ID: {order.payment.provider_transaction_id}
+              </p>
+            )}
+            {order.payment?.paid_at && (
+              <p className="text-[11px]">
+                Paid at: {new Date(order.payment.paid_at).toLocaleString("en-US")}
+              </p>
+            )}
+          </div>
+        ) : isPayable ? (
+          <div className="bg-surface-muted/60 rounded-lg p-4 space-y-3">
+            <div className="flex items-center gap-2 text-amber-800 text-xs font-medium">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>Payment is currently pending for this order.</span>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handlePayNow}
+                disabled={initiatingPayment}
+                className="w-full sm:w-auto gap-2"
+              >
+                {initiatingPayment ? (
+                  <>
+                    <RotateCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Connecting to Gateway...</span>
+                  </>
+                ) : (
+                  <>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Pay Now (${order.total})</span>
+                  </>
+                )}
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={fetchOrder}
+                className="w-full sm:w-auto gap-1 text-xs"
+              >
+                <RotateCw className="w-3 h-3" />
+                <span>Refresh Status</span>
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <p className="text-xs text-lumera-text-muted">
+            Order is cancelled and no longer payable.
+          </p>
+        )}
+      </Card>
 
       {/* Items Snapshot Card */}
       <Card className="p-6 bg-card border-border">

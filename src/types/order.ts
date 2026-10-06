@@ -90,6 +90,7 @@ export interface OrderDetail {
   customer_notes: string;
   items: OrderItemDetail[];
   status_history: OrderStatusHistoryItem[];
+  payment?: import("./payment").PaymentStatusResponse | null;
   created_at: string;
   updated_at: string;
 }

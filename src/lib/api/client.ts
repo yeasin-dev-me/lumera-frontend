@@ -220,6 +220,29 @@ class StorefrontApiClient {
   async getCustomerOrder(publicId: string): Promise<import("@/types/order").OrderDetail> {
     return this.request<import("@/types/order").OrderDetail>(`/customer/orders/${encodeURIComponent(publicId)}/`);
   }
+
+  // Payment APIs (ADR-0014)
+  async initiatePayment(
+    orderPublicId: string,
+    gateway: string = "sslcommerz",
+    returnUrl?: string
+  ): Promise<import("@/types/payment").PaymentInitiateResponse> {
+    return this.request<import("@/types/payment").PaymentInitiateResponse>(
+      `/customer/orders/${encodeURIComponent(orderPublicId)}/payment/`,
+      {
+        method: "POST",
+        body: JSON.stringify({ gateway, return_url: returnUrl }),
+      }
+    );
+  }
+
+  async getPaymentStatus(
+    orderPublicId: string
+  ): Promise<import("@/types/payment").PaymentStatusResponse> {
+    return this.request<import("@/types/payment").PaymentStatusResponse>(
+      `/customer/orders/${encodeURIComponent(orderPublicId)}/payment/`
+    );
+  }
 }
 
 export const api = new StorefrontApiClient();
