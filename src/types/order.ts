@@ -61,7 +61,16 @@ export interface OrderItemDetail {
 export interface OrderStatusHistoryItem {
   from_status: string;
   to_status: string;
+  actor_type?: "system" | "staff" | "customer";
   reason: string;
+  created_at: string;
+}
+
+export interface OrderTimelineItem {
+  from_status?: string;
+  to_status: string;
+  actor_type?: "system" | "staff" | "customer";
+  reason?: string;
   created_at: string;
 }
 
@@ -90,7 +99,13 @@ export interface OrderDetail {
   customer_notes: string;
   items: OrderItemDetail[];
   status_history: OrderStatusHistoryItem[];
+  courier?: string | null;
+  tracking_number?: string | null;
+  tracking_url?: string | null;
+  shipped_at?: string | null;
+  delivered_at?: string | null;
   payment?: import("./payment").PaymentStatusResponse | null;
   created_at: string;
   updated_at: string;
 }
+

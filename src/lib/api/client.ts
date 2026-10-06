@@ -1,4 +1,5 @@
 import { ApiErrorPayload, HealthCheckResponse, StorefrontConfig } from "@/types/api";
+import { OrderDetail } from "@/types/order";
 
 export class ApiError extends Error {
   code: string;
@@ -243,7 +244,29 @@ class StorefrontApiClient {
       `/customer/orders/${encodeURIComponent(orderPublicId)}/payment/`
     );
   }
+
+  async cancelCustomerOrder(
+    orderPublicId: string,
+    reason?: string
+  ): Promise<OrderDetail> {
+    return this.request<OrderDetail>(
+      `/customer/orders/${encodeURIComponent(orderPublicId)}/cancel/`,
+      {
+        method: "POST",
+        body: JSON.stringify({ reason: reason || "Cancelled by customer" }),
+      }
+    );
+  }
+
+  async getOrderTimeline(
+    orderPublicId: string
+  ): Promise<import("@/types/order").OrderTimelineItem[]> {
+    return this.request<import("@/types/order").OrderTimelineItem[]>(
+      `/customer/orders/${encodeURIComponent(orderPublicId)}/timeline/`
+    );
+  }
 }
 
 export const api = new StorefrontApiClient();
+
 
