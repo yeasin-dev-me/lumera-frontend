@@ -318,6 +318,21 @@ class StorefrontApiClient {
       `/customer/orders/${encodeURIComponent(orderPublicId)}/timeline/`
     );
   }
+
+  // Content & Editorial (Step 10, ADR-0017)
+  async getHomeContent(): Promise<import("@/types/content").StorefrontHomeContent> {
+    return this.request<import("@/types/content").StorefrontHomeContent>("/content/home/");
+  }
+
+  async getBanners(): Promise<import("@/types/content").ContentBlock[]> {
+    return this.request<import("@/types/content").ContentBlock[]>("/content/banners/");
+  }
+
+  async getContentBySlug(slug: string): Promise<import("@/types/content").ContentBlock> {
+    return this.request<import("@/types/content").ContentBlock>(
+      `/content/${encodeURIComponent(slug)}/`
+    );
+  }
 }
 
 export const api = new StorefrontApiClient();

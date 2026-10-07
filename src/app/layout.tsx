@@ -4,9 +4,35 @@ import { AuthProvider } from "@/lib/auth/auth-context";
 import { CartProvider } from "@/lib/cart/cart-context";
 import { Navbar } from "@/components/layout/Navbar";
 
+import { SITE_URL } from "@/lib/seo/canonical";
+
 export const metadata: Metadata = {
-  title: "Lumera | Modern Skincare & Pure Beauty",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Lumera | Modern Skincare & Pure Beauty",
+    template: "%s | Lumera Skincare",
+  },
   description: "Experience modern, thoughtful skincare engineered for radiance and purity.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Lumera | Modern Skincare & Pure Beauty",
+    description: "Experience modern, thoughtful skincare engineered for radiance and purity.",
+    url: SITE_URL,
+    siteName: "Lumera Skincare",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lumera | Modern Skincare & Pure Beauty",
+    description: "Experience modern, thoughtful skincare engineered for radiance and purity.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
