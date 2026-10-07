@@ -333,6 +333,36 @@ class StorefrontApiClient {
       `/content/${encodeURIComponent(slug)}/`
     );
   }
+
+  // Customer Communication & Notifications (Step 11, ADR-0018)
+  async getCommunicationPreferences(): Promise<import("@/types/notifications").CommunicationPreference> {
+    return this.request<import("@/types/notifications").CommunicationPreference>(
+      "/customer/communication-preferences/"
+    );
+  }
+
+  async updateCommunicationPreferences(
+    payload: import("@/types/notifications").CommunicationPreferenceInput
+  ): Promise<import("@/types/notifications").CommunicationPreference> {
+    return this.request<import("@/types/notifications").CommunicationPreference>(
+      "/customer/communication-preferences/",
+      {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      }
+    );
+  }
+
+  async getCustomerNotifications(
+    params?: { page?: number; page_size?: number }
+  ): Promise<import("@/types/notifications").PaginatedCustomerNotifications> {
+    const sp = new URLSearchParams();
+    if (params?.page) sp.set("page", params.page.toString());
+    if (params?.page_size) sp.set("page_size", params.page_size.toString());
+    const qs = sp.toString();
+    const endpoint = qs ? `/customer/notifications/?${qs}` : "/customer/notifications/";
+    return this.request<import("@/types/notifications").PaginatedCustomerNotifications>(endpoint);
+  }
 }
 
 export const api = new StorefrontApiClient();

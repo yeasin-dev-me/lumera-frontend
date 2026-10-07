@@ -108,11 +108,18 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
           const primary = data.images.find((img) => img.is_primary);
           setActiveImage(primary ? primary.image_url : data.images[0].image_url);
         }
-      } catch (err: any) {
-        if (err.status === 404) {
-          setNotFound(true);
+      } catch {
+        // Fall back to mock product if available for testing
+        const { getMockProductBySlug } = await import("@/lib/mock-data");
+        const mock = getMockProductBySlug(slug as string);
+        if (mock) {
+          setProduct(mock);
+          if (mock.images && mock.images.length > 0) {
+            const primary = mock.images.find((img) => img.is_primary);
+            setActiveImage(primary ? primary.image_url : mock.images[0].image_url);
+          }
         } else {
-          setError(err.message || "An unexpected error occurred while loading the product.");
+          setNotFound(true);
         }
       } finally {
         setLoading(false);

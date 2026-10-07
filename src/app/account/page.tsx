@@ -113,6 +113,38 @@ export default function AccountPage() {
           </Link>
         </Card>
 
+        <Card className="p-6 hover:border-lumera-primary transition-colors">
+          <div className="flex items-center gap-3 mb-3 text-lumera-primary">
+            <Mail className="h-5 w-5" />
+            <h2 className="font-serif text-lg font-semibold text-lumera-text">Communication</h2>
+          </div>
+          <p className="text-xs text-lumera-text-muted mb-4">
+            Manage your marketing consent and operational email channels.
+          </p>
+          <Link
+            href="/account/communication-preferences"
+            className="text-xs font-semibold text-lumera-primary hover:underline"
+          >
+            Preferences →
+          </Link>
+        </Card>
+
+        <Card className="p-6 hover:border-lumera-primary transition-colors">
+          <div className="flex items-center gap-3 mb-3 text-lumera-primary">
+            <Mail className="h-5 w-5" />
+            <h2 className="font-serif text-lg font-semibold text-lumera-text">Notifications</h2>
+          </div>
+          <p className="text-xs text-lumera-text-muted mb-4">
+            View history of all operational and delivery messages sent to you.
+          </p>
+          <Link
+            href="/account/notifications"
+            className="text-xs font-semibold text-lumera-primary hover:underline"
+          >
+            View History →
+          </Link>
+        </Card>
+
         <Card className="p-6 border-dashed bg-surface-muted/50">
           <div className="flex items-center gap-3 mb-3 text-lumera-text-muted">
             <ShieldCheck className="h-5 w-5" />

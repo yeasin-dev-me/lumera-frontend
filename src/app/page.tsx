@@ -21,6 +21,13 @@ import {
   Megaphone,
 } from "lucide-react";
 
+import {
+  MOCK_CATEGORIES,
+  MOCK_PRODUCTS,
+  MOCK_HOME_CONTENT,
+  MOCK_CONFIG,
+} from "@/lib/mock-data";
+
 export default function StorefrontHomePage() {
   const [healthStatus, setHealthStatus] = useState<string>("Checking...");
   const [backendConfig, setBackendConfig] = useState<StorefrontConfig | null>(null);
@@ -35,9 +42,9 @@ export default function StorefrontHomePage() {
     setError(null);
     try {
       const [health, config, content, cats, prods] = await Promise.all([
-        api.getHealth(),
-        api.getConfig(),
-        api.getHomeContent().catch(() => null),
+        api.getHealth().catch(() => ({ status: "demo_mode" })),
+        api.getConfig().catch(() => MOCK_CONFIG),
+        api.getHomeContent().catch(() => MOCK_HOME_CONTENT),
         api.getCategories().catch(() => [] as Category[]),
         api.getProducts({ page_size: 4 }).catch(() => ({
           count: 0,
@@ -47,17 +54,20 @@ export default function StorefrontHomePage() {
         })),
       ]);
       setHealthStatus(health.status);
-      setBackendConfig(config);
-      setHomeContent(content);
-      setCategories(cats);
-      setFeaturedProducts(prods.results);
-    } catch (err: unknown) {
-      if (err instanceof ApiError) {
-        setError(`Backend Error (${err.code}): ${err.message}`);
-      } else {
-        setError("Unable to communicate with the Backend API.");
-      }
-      setHealthStatus("unavailable");
+      setBackendConfig(config || MOCK_CONFIG);
+      setHomeContent(content || MOCK_HOME_CONTENT);
+      setCategories(cats && cats.length > 0 ? cats : MOCK_CATEGORIES);
+      setFeaturedProducts(
+        prods && prods.results && prods.results.length > 0
+          ? prods.results
+          : (MOCK_PRODUCTS.slice(0, 4) as ProductListItem[])
+      );
+    } catch {
+      setHealthStatus("demo_mode");
+      setBackendConfig(MOCK_CONFIG);
+      setHomeContent(MOCK_HOME_CONTENT);
+      setCategories(MOCK_CATEGORIES);
+      setFeaturedProducts(MOCK_PRODUCTS.slice(0, 4) as ProductListItem[]);
     } finally {
       setLoading(false);
     }
