@@ -50,6 +50,11 @@ export default function CustomerOrderDetailPage() {
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [returnReason, setReturnReason] = useState("");
+  const [returnItemId, setReturnItemId] = useState<number | null>(null);
+  const [returnQuantity, setReturnQuantity] = useState(1);
+  const [returnLoading, setReturnLoading] = useState(false);
+  const [returnMessage, setReturnMessage] = useState<string | null>(null);
 
   const fetchOrder = React.useCallback(() => {
     if (!orderId) return;
@@ -182,6 +187,28 @@ export default function CustomerOrderDetailPage() {
 
   const currentStepIdx = getStepIndex(order.status);
   const isCancelled = order.status === "cancelled";
+  const canRequestReturn = order.status === "delivered";
+
+  const submitReturn = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!returnItemId || !returnReason.trim()) return;
+    setReturnLoading(true);
+    setReturnMessage(null);
+    try {
+      await api.createCustomerReturn({
+        order_public_id: order.public_id,
+        reason: returnReason.trim(),
+        items: [{ order_item_id: returnItemId, quantity: returnQuantity }],
+      });
+      setReturnMessage("Return request submitted for review.");
+      setReturnReason("");
+      setReturnItemId(null);
+    } catch (err: unknown) {
+      setReturnMessage(err instanceof ApiError ? err.message : "Unable to submit return request.");
+    } finally {
+      setReturnLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 space-y-6">
@@ -245,6 +272,49 @@ export default function CustomerOrderDetailPage() {
         <Alert variant="danger" title="Action Error">
           {actionError}
         </Alert>
+      )}
+
+      {canRequestReturn && (
+        <Card className="p-6">
+          <h2 className="text-sm font-semibold text-lumera-text mb-1">Request a return</h2>
+          <p className="text-xs text-lumera-text-muted mb-4">
+            Returns are available for delivered orders. Refund decisions are handled separately by operations.
+          </p>
+          {returnMessage && <Alert variant={returnMessage.includes("submitted") ? "success" : "danger"}>{returnMessage}</Alert>}
+          <form onSubmit={submitReturn} className="space-y-3 mt-3">
+            <select
+              value={returnItemId ?? ""}
+              onChange={(event) => setReturnItemId(event.target.value ? Number(event.target.value) : null)}
+              className="w-full rounded border border-border bg-background px-3 py-2 text-sm"
+              required
+            >
+              <option value="">Select an item</option>
+              {order.items.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.product_name} (quantity {item.quantity})
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min={1}
+              max={returnItemId ? order.items.find((item) => item.id === returnItemId)?.quantity : 1}
+              value={returnQuantity}
+              onChange={(event) => setReturnQuantity(Number(event.target.value))}
+              className="w-full rounded border border-border bg-background px-3 py-2 text-sm"
+              required
+            />
+            <textarea
+              value={returnReason}
+              onChange={(event) => setReturnReason(event.target.value)}
+              placeholder="Tell us why you are requesting a return"
+              minLength={3}
+              className="w-full rounded border border-border bg-background px-3 py-2 text-sm min-h-24"
+              required
+            />
+            <Button type="submit" isLoading={returnLoading}>Submit return request</Button>
+          </form>
+        </Card>
       )}
 
       {/* Order Progression Stepper */}

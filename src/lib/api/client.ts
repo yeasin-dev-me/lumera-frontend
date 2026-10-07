@@ -128,6 +128,59 @@ class StorefrontApiClient {
     return this.request<import("@/types/api").UserProfile>("/customer/me/");
   }
 
+  async updateMe(
+    payload: Pick<import("@/types/api").UserProfile, "first_name" | "last_name" | "phone">
+  ): Promise<import("@/types/api").UserProfile> {
+    return this.request<import("@/types/api").UserProfile>("/customer/me/", {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async getAddresses(): Promise<import("@/types/api").CustomerAddress[]> {
+    return this.request<import("@/types/api").CustomerAddress[]>("/customer/addresses/");
+  }
+
+  async createAddress(
+    payload: import("@/types/api").CustomerAddressInput
+  ): Promise<import("@/types/api").CustomerAddress> {
+    return this.request<import("@/types/api").CustomerAddress>("/customer/addresses/", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async updateAddress(
+    id: string,
+    payload: Partial<import("@/types/api").CustomerAddressInput>
+  ): Promise<import("@/types/api").CustomerAddress> {
+    return this.request<import("@/types/api").CustomerAddress>(
+      `/customer/addresses/${encodeURIComponent(id)}/`,
+      { method: "PATCH", body: JSON.stringify(payload) }
+    );
+  }
+
+  async deleteAddress(id: string): Promise<void> {
+    return this.request<void>(`/customer/addresses/${encodeURIComponent(id)}/`, {
+      method: "DELETE",
+    });
+  }
+
+  async getCustomerReturns(): Promise<import("@/types/api").CustomerReturn[]> {
+    return this.request<import("@/types/api").CustomerReturn[]>("/customer/returns/");
+  }
+
+  async createCustomerReturn(payload: {
+    order_public_id: string;
+    reason: string;
+    items: { order_item_id: number; quantity: number }[];
+  }): Promise<import("@/types/api").CustomerReturn> {
+    return this.request<import("@/types/api").CustomerReturn>("/customer/returns/", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
   // Catalog endpoints
   async getCategories(): Promise<import("@/types/catalog").Category[]> {
     return this.request<import("@/types/catalog").Category[]>("/storefront/categories/");
@@ -268,5 +321,3 @@ class StorefrontApiClient {
 }
 
 export const api = new StorefrontApiClient();
-
-

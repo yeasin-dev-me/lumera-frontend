@@ -74,6 +74,32 @@ export default function AccountPage() {
         <Card className="p-6 hover:border-lumera-primary transition-colors">
           <div className="flex items-center gap-3 mb-3 text-lumera-primary">
             <Package className="h-5 w-5" />
+            <h2 className="font-serif text-lg font-semibold text-lumera-text">My Returns</h2>
+          </div>
+          <p className="text-xs text-lumera-text-muted mb-4">
+            Track the status of your return requests.
+          </p>
+          <Link href="/account/returns" className="text-xs font-semibold text-lumera-primary hover:underline">
+            View Returns →
+          </Link>
+        </Card>
+
+        <Card className="p-6 hover:border-lumera-primary transition-colors">
+          <div className="flex items-center gap-3 mb-3 text-lumera-primary">
+            <Package className="h-5 w-5" />
+            <h2 className="font-serif text-lg font-semibold text-lumera-text">Saved Addresses</h2>
+          </div>
+          <p className="text-xs text-lumera-text-muted mb-4">
+            Manage delivery addresses without changing historical orders.
+          </p>
+          <Link href="/account/addresses" className="text-xs font-semibold text-lumera-primary hover:underline">
+            Manage Addresses →
+          </Link>
+        </Card>
+
+        <Card className="p-6 hover:border-lumera-primary transition-colors">
+          <div className="flex items-center gap-3 mb-3 text-lumera-primary">
+            <Package className="h-5 w-5" />
             <h2 className="font-serif text-lg font-semibold text-lumera-text">Order History</h2>
           </div>
           <p className="text-xs text-lumera-text-muted mb-4">

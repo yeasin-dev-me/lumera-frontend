@@ -12,6 +12,7 @@ interface AuthContextType {
   login: (credentials: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => Promise<void>;
+  refreshProfile: () => Promise<UserProfile>;
   clearError: () => void;
 }
 
@@ -123,6 +124,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [handleAuthSuccess]);
 
+  const refreshProfile = useCallback(async () => {
+    const profile = await api.getMe();
+    setUser(profile);
+    return profile;
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -133,6 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         register,
         logout,
+        refreshProfile,
         clearError,
       }}
     >

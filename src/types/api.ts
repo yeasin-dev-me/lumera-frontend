@@ -25,6 +25,51 @@ export interface UserProfile {
   created_at: string;
 }
 
+export interface CustomerAddress {
+  id: string;
+  label: string;
+  full_name: string;
+  phone: string;
+  address_line1: string;
+  address_line2: string;
+  area: string;
+  city: string;
+  postal_code: string;
+  country: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CustomerAddressInput {
+  label?: string;
+  full_name: string;
+  phone: string;
+  address_line1: string;
+  address_line2?: string;
+  area?: string;
+  city: string;
+  postal_code?: string;
+  country?: string;
+  is_default?: boolean;
+}
+
+export interface CustomerReturnItem {
+  order_item_id: string;
+  product_name: string;
+  quantity: number;
+}
+
+export interface CustomerReturn {
+  public_id: string;
+  order_public_id: string;
+  reason: string;
+  status: "requested" | "approved" | "rejected" | "received" | "cancelled";
+  staff_note: string;
+  items: CustomerReturnItem[];
+  created_at: string;
+}
+
 export interface RegisterPayload {
   email: string;
   password: string;
