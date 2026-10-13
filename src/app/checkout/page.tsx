@@ -274,14 +274,15 @@ export default function CheckoutPage() {
                   <input
                     id="checkout_full_name"
                     type="text"
+                    autoComplete="name"
                     value={formData.full_name}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("full_name", e.target.value)}
                     placeholder="e.g. Jane Doe"
                     disabled={isSubmitting}
                     required
-                    className={`w-full px-3.5 py-2.5 rounded-md border ${
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       formErrors.full_name ? "border-rose-500" : "border-border"
-                    } bg-background text-sm text-lumera-text focus:outline-none focus:ring-2 focus:ring-lumera-primary`}
+                    } bg-background text-base sm:text-sm text-lumera-text focus:outline-none focus:border-lumera-primary focus:ring-2 focus:ring-lumera-primary/20 min-h-[46px] transition-all`}
                   />
                   {formErrors.full_name && (
                     <p className="text-[11px] text-rose-500 mt-1">{formErrors.full_name}</p>
@@ -295,14 +296,16 @@ export default function CheckoutPage() {
                   <input
                     id="checkout_phone"
                     type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
                     value={formData.phone}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("phone", e.target.value)}
                     placeholder="e.g. +880 1712-345678"
                     disabled={isSubmitting}
                     required
-                    className={`w-full px-3.5 py-2.5 rounded-md border ${
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       formErrors.phone ? "border-rose-500" : "border-border"
-                    } bg-background text-sm text-lumera-text focus:outline-none focus:ring-2 focus:ring-lumera-primary`}
+                    } bg-background text-base sm:text-sm text-lumera-text focus:outline-none focus:border-lumera-primary focus:ring-2 focus:ring-lumera-primary/20 min-h-[46px] transition-all`}
                   />
                   {formErrors.phone && (
                     <p className="text-[11px] text-rose-500 mt-1">{formErrors.phone}</p>
@@ -317,14 +320,15 @@ export default function CheckoutPage() {
                 <input
                   id="checkout_address"
                   type="text"
+                  autoComplete="street-address"
                   value={formData.address}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("address", e.target.value)}
                   placeholder="e.g. House 42, Road 11, Block D"
                   disabled={isSubmitting}
                   required
-                  className={`w-full px-3.5 py-2.5 rounded-md border ${
+                  className={`w-full px-3.5 py-2.5 rounded-xl border ${
                     formErrors.address ? "border-rose-500" : "border-border"
-                  } bg-background text-sm text-lumera-text focus:outline-none focus:ring-2 focus:ring-lumera-primary`}
+                  } bg-background text-base sm:text-sm text-lumera-text focus:outline-none focus:border-lumera-primary focus:ring-2 focus:ring-lumera-primary/20 min-h-[46px] transition-all`}
                 />
                 {formErrors.address && (
                   <p className="text-[11px] text-rose-500 mt-1">{formErrors.address}</p>
@@ -338,11 +342,12 @@ export default function CheckoutPage() {
                 <input
                   id="checkout_address_line2"
                   type="text"
+                  autoComplete="address-line2"
                   value={formData.address_line2 || ""}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("address_line2", e.target.value)}
                   placeholder="e.g. Apt 4B, 3rd Floor"
                   disabled={isSubmitting}
-                  className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background text-sm text-lumera-text focus:outline-none focus:ring-2 focus:ring-lumera-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-base sm:text-sm text-lumera-text focus:outline-none focus:border-lumera-primary focus:ring-2 focus:ring-lumera-primary/20 min-h-[46px] transition-all"
                 />
               </div>
 
@@ -354,14 +359,15 @@ export default function CheckoutPage() {
                   <input
                     id="checkout_city"
                     type="text"
+                    autoComplete="address-level2"
                     value={formData.city}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("city", e.target.value)}
                     placeholder="Dhaka"
                     disabled={isSubmitting}
                     required
-                    className={`w-full px-3.5 py-2.5 rounded-md border ${
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       formErrors.city ? "border-rose-500" : "border-border"
-                    } bg-background text-sm text-lumera-text focus:outline-none focus:ring-2 focus:ring-lumera-primary`}
+                    } bg-background text-base sm:text-sm text-lumera-text focus:outline-none focus:border-lumera-primary focus:ring-2 focus:ring-lumera-primary/20 min-h-[46px] transition-all`}
                   />
                   {formErrors.city && (
                     <p className="text-[11px] text-rose-500 mt-1">{formErrors.city}</p>
@@ -379,7 +385,7 @@ export default function CheckoutPage() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("area", e.target.value)}
                     placeholder="e.g. Banani"
                     disabled={isSubmitting}
-                    className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background text-sm text-lumera-text focus:outline-none focus:ring-2 focus:ring-lumera-primary"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-base sm:text-sm text-lumera-text focus:outline-none focus:border-lumera-primary focus:ring-2 focus:ring-lumera-primary/20 min-h-[46px] transition-all"
                   />
                 </div>
 
@@ -390,11 +396,13 @@ export default function CheckoutPage() {
                   <input
                     id="checkout_postal_code"
                     type="text"
+                    inputMode="numeric"
+                    autoComplete="postal-code"
                     value={formData.postal_code || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("postal_code", e.target.value)}
                     placeholder="e.g. 1213"
                     disabled={isSubmitting}
-                    className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background text-sm text-lumera-text focus:outline-none focus:ring-2 focus:ring-lumera-primary"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-base sm:text-sm text-lumera-text focus:outline-none focus:border-lumera-primary focus:ring-2 focus:ring-lumera-primary/20 min-h-[46px] transition-all"
                   />
                 </div>
               </div>
@@ -413,7 +421,7 @@ export default function CheckoutPage() {
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="e.g. Call before delivery, gate code is 1234"
                   disabled={isSubmitting}
-                  className="w-full rounded-md border border-input bg-surface px-3 py-2 text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-lumera-primary"
+                  className="w-full rounded-md border border-input bg-surface px-3 py-2 text-base sm:text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-lumera-primary"
                 />
               </div>
             </div>

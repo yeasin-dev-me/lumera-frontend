@@ -12,7 +12,7 @@ import { CustomerNotification } from "@/types/notifications";
 import { ArrowLeft, Bell, Mail, Clock, CheckCircle2, AlertCircle, ShoppingBag, RotateCcw, CreditCard } from "lucide-react";
 
 const EVENT_LABELS: Record<string, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
-  account_welcome: { label: "Welcome to Lumera", icon: Bell },
+  account_welcome: { label: "Welcome to Penguin Mart", icon: Bell },
   order_placed: { label: "Order Placed", icon: ShoppingBag },
   payment_confirmed: { label: "Payment Confirmed", icon: CreditCard },
   payment_failed: { label: "Payment Failed", icon: AlertCircle },

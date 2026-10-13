@@ -11,7 +11,7 @@ export const MOCK_CATEGORIES: Category[] = [
     image_url: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80",
     status: "active",
     sort_order: 1,
-    seo_title: "Wholesale Botanical Cleansers & Toners | Lumera",
+    seo_title: "Wholesale Botanical Cleansers & Toners | Penguin Mart",
     seo_description: "Clean, pH-balanced botanical skincare cleansers for professional wholesale clients.",
   },
   {
@@ -22,7 +22,7 @@ export const MOCK_CATEGORIES: Category[] = [
     image_url: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80",
     status: "active",
     sort_order: 2,
-    seo_title: "Active Botanical Serums & Treatment Elixirs | Lumera",
+    seo_title: "Active Botanical Serums & Treatment Elixirs | Penguin Mart",
     seo_description: "Concentrated clinical serums formulated with organic botanicals and bio-peptides.",
   },
   {
@@ -33,7 +33,7 @@ export const MOCK_CATEGORIES: Category[] = [
     image_url: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80",
     status: "active",
     sort_order: 3,
-    seo_title: "Wholesale Barrier Creams & Moisturizers | Lumera",
+    seo_title: "Wholesale Barrier Creams & Moisturizers | Penguin Mart",
     seo_description: "Nourishing lipid and ceramide facial moisturizers for retail spas and aesthetics salons.",
   },
   {
@@ -44,7 +44,7 @@ export const MOCK_CATEGORIES: Category[] = [
     image_url: "https://images.unsplash.com/photo-1608248597359-0010f37f3747?auto=format&fit=crop&w=600&q=80",
     status: "active",
     sort_order: 4,
-    seo_title: "Cold-Pressed Botanical Facial Oils | Lumera",
+    seo_title: "Cold-Pressed Botanical Facial Oils | Penguin Mart",
     seo_description: "Pure plant lipids, squalane, and rosehip elixirs for deep cellular radiance.",
   },
   {
@@ -55,7 +55,7 @@ export const MOCK_CATEGORIES: Category[] = [
     image_url: "https://images.unsplash.com/photo-1512290900672-1f55b9e078c1?auto=format&fit=crop&w=600&q=80",
     status: "active",
     sort_order: 5,
-    seo_title: "Targeted Eye & Lip Botanical Treatments | Lumera",
+    seo_title: "Targeted Eye & Lip Botanical Treatments | Penguin Mart",
     seo_description: "Specialized restorative care for delicate ocular and perioral zones.",
   },
   {
@@ -66,7 +66,7 @@ export const MOCK_CATEGORIES: Category[] = [
     image_url: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80",
     status: "active",
     sort_order: 6,
-    seo_title: "Mineral Sunscreen & Environmental Defense | Lumera",
+    seo_title: "Mineral Sunscreen & Environmental Defense | Penguin Mart",
     seo_description: "Clean zinc oxide sunscreens providing photo-protection and microbiome defense.",
   },
 ];
@@ -77,7 +77,7 @@ export const MOCK_PRODUCTS: ProductDetail[] = [
     public_id: "prod_mock_001",
     name: "Botanical Hydration Mist & Toner",
     slug: "botanical-hydration-mist",
-    sku: "LUM-CL-001",
+    sku: "PEN-CL-001",
     category: { id: 1, name: "Cleansers & Toners", slug: "cleansers-toners" },
     price: "38.00",
     discount_price: "32.00",
@@ -91,7 +91,7 @@ export const MOCK_PRODUCTS: ProductDetail[] = [
     primary_image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
     description:
       "An ultra-fine restorative floral mist with organic Bulgarian damask rose water, chamomile hydrosol, and bioactive hyaluronic acid. Restores dermal pH balance instantly after cleansing.",
-    seo_title: "Botanical Hydration Mist & Rose Floral Toner | Lumera",
+    seo_title: "Botanical Hydration Mist & Rose Floral Toner | Penguin Mart",
     seo_description: "Organic rose water mist with bio-fermented hyaluronic acid for glowing hydration.",
     created_at: "2026-03-01T10:00:00Z",
     updated_at: "2026-03-01T10:00:00Z",
@@ -468,10 +468,10 @@ export const MOCK_HOME_CONTENT: StorefrontHomeContent = {
     title: "Pure Botanical Science for Modern Skincare",
     slug: "spring-botanical-hero",
     content_type: "hero",
-    body: "Lumera delivers high-potency wholesale skincare engineered for aesthetic clinics, luxury day spas, and discerning beauty retailers worldwide. Clean, certified, and cruelty-free.",
+    body: "Penguin Mart delivers high-potency, pure skincare & beauty essentials designed for healthy, glowing skin. Clean, certified, and cruelty-free.",
     image_url: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1200&q=80",
     alt_text: "Spring 2026 Collection",
-    cta_label: "Explore Wholesale Catalog",
+    cta_label: "Explore Collection",
     cta_url: "/products",
     linked_product_id: null,
     linked_category_slug: null,
@@ -485,13 +485,13 @@ export const MOCK_HOME_CONTENT: StorefrontHomeContent = {
   },
   announcement: {
     public_id: "cb_ann_001",
-    title: "Wholesale Restock Promo",
-    slug: "spring-restock-announcement",
+    title: "Welcome to Penguin Mart",
+    slug: "welcome-penguin-mart",
     content_type: "announcement",
-    body: "✨ Spring Wholesale Event: Enjoy tiered discounts up to 25% on volume orders over $500.",
+    body: "🐧 Welcome to Penguin Mart! Free shipping on orders over $75 · Pure Skin Care & Beauty.",
     image_url: "",
-    alt_text: "Limited Time Wholesale Promo",
-    cta_label: "View Tier Pricing",
+    alt_text: "Penguin Mart Welcome",
+    cta_label: "Shop Now",
     cta_url: "/products",
     linked_product_id: null,
     linked_category_slug: null,
@@ -507,10 +507,10 @@ export const MOCK_HOME_CONTENT: StorefrontHomeContent = {
   sections: [
     {
       public_id: "cb_sec_001",
-      title: "Formulated for Cellular Barrier Integrity",
+      title: "Pure Skincare & Beauty Formulations",
       slug: "clinical-botany-promo",
       content_type: "promotional_section",
-      body: "Every formulation is backed by independent third-party clinical efficacy testing. Experience high-tolerance restorative botanicals with guaranteed minimum 24-month shelf life.",
+      body: "Every Penguin Mart formulation is crafted with bio-compatible botanicals, cold-pressed plant seed oils, and gentle barrier-fortifying actives for radiant skin.",
       image_url: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=80",
       alt_text: "Clean Science Barrier Protection",
       cta_label: "Discover Formulations",
@@ -529,16 +529,16 @@ export const MOCK_HOME_CONTENT: StorefrontHomeContent = {
 };
 
 export const MOCK_CONFIG: StorefrontConfig = {
-  site_name: "Lumera",
+  site_name: "Penguin Mart",
   currency: "USD",
   version: "1.0.0",
-  announcement_text: "✨ Spring Wholesale Event: Tiered discounts up to 25% on volume orders.",
+  announcement_text: "🐧 Welcome to Penguin Mart! Complimentary shipping on orders over $75.",
 };
 
 export const MOCK_ORDERS: OrderDetail[] = [
   {
     public_id: "ord_mock_1001",
-    order_number: "LUM-2026-1001",
+    order_number: "PEN-2026-1001",
     status: "delivered",
     payment_status: "paid",
     currency: "USD",
@@ -651,4 +651,31 @@ export const MOCK_ORDERS: OrderDetail[] = [
 
 export function getMockProductBySlug(slug: string): ProductDetail | undefined {
   return MOCK_PRODUCTS.find((p) => p.slug === slug || p.public_id === slug);
+}
+
+export function filterMockProducts(params?: import("@/types/catalog").ProductListParams): import("@/types/catalog").PaginatedProducts {
+  let list = [...MOCK_PRODUCTS];
+  if (params?.category) {
+    list = list.filter((p) => p.category.slug === params.category);
+  }
+  if (params?.search) {
+    const q = params.search.toLowerCase().trim();
+    list = list.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q) ||
+        p.sku.toLowerCase().includes(q)
+    );
+  }
+  if (params?.ordering) {
+    if (params.ordering === "price") list.sort((a, b) => Number(a.effective_price) - Number(b.effective_price));
+    if (params.ordering === "-price") list.sort((a, b) => Number(b.effective_price) - Number(a.effective_price));
+    if (params.ordering === "name") list.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return {
+    count: list.length,
+    next: null,
+    previous: null,
+    results: list,
+  };
 }

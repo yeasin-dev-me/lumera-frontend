@@ -72,7 +72,7 @@ export default function ProfilePage() {
       <div className="mb-6">
         <h1 className="font-serif text-2xl font-semibold text-lumera-text">Customer Profile</h1>
         <p className="text-xs text-lumera-text-muted mt-1">
-          Your personal details authenticated via Lumera Customer API.
+          Your personal details authenticated via Penguin Mart Customer API.
         </p>
       </div>
 

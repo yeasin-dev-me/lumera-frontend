@@ -186,13 +186,13 @@ export default function CartPage() {
                 return (
                   <div
                     key={item.product.public_id}
-                    className={`p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-opacity ${
+                    className={`p-3.5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 transition-opacity ${
                       isItemUpdating ? "opacity-60" : "opacity-100"
                     } ${isOutOfStock ? "bg-muted/20" : ""}`}
                   >
                     {/* Product info & image */}
-                    <div className="flex items-center gap-4 min-w-0 flex-1">
-                      <div className="relative aspect-square w-20 sm:w-24 rounded-xl overflow-hidden bg-muted/40 shrink-0 border border-border/60">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 w-full sm:w-auto">
+                      <div className="relative aspect-square w-16 sm:w-24 rounded-xl overflow-hidden bg-muted/40 shrink-0 border border-border/60">
                         {item.product.primary_image ? (
                           <img
                             src={item.product.primary_image}
@@ -200,40 +200,40 @@ export default function CartPage() {
                             className="h-full w-full object-cover object-center"
                           />
                         ) : (
-                          <div className="h-full w-full flex items-center justify-center bg-lumera-cream text-lumera-primary font-serif text-xl">
+                          <div className="h-full w-full flex items-center justify-center bg-lumera-cream text-lumera-primary font-serif text-lg sm:text-xl">
                             {item.product.name.charAt(0)}
                           </div>
                         )}
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground truncate hover:text-lumera-primary transition-colors">
+                        <h3 className="font-serif text-sm sm:text-lg font-medium text-foreground truncate hover:text-lumera-primary transition-colors">
                           <Link href={`/products/${item.product.slug}`}>
                             {item.product.name}
                           </Link>
                         </h3>
 
-                        <div className="mt-1 flex items-center gap-2 text-xs text-lumera-text-muted">
-                          <span>Unit Price: ${item.unit_price}</span>
+                        <div className="mt-0.5 sm:mt-1 flex items-center gap-2 text-xs text-lumera-text-muted">
+                          <span>${item.unit_price}</span>
                           {item.product.discount_price && (
-                            <Badge variant="accent" className="text-[10px] py-0 px-1.5">
+                            <Badge variant="accent" className="text-[9px] py-0 px-1.5">
                               Sale
                             </Badge>
                           )}
                         </div>
 
                         {/* Availability badge */}
-                        <div className="mt-2">
+                        <div className="mt-1 sm:mt-2">
                           {item.availability_status === "available" ? (
-                            <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                            <span className="text-[10px] sm:text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                               In Stock
                             </span>
                           ) : item.availability_status === "insufficient_stock" ? (
-                            <span className="text-[11px] font-medium text-amber-600">
-                              Only {item.product.stock_quantity} remaining
+                            <span className="text-[10px] sm:text-[11px] font-medium text-amber-600">
+                              Only {item.product.stock_quantity} left
                             </span>
                           ) : (
-                            <span className="text-[11px] font-medium text-rose-600">
+                            <span className="text-[10px] sm:text-[11px] font-medium text-rose-600">
                               Currently Unavailable
                             </span>
                           )}
@@ -242,9 +242,9 @@ export default function CartPage() {
                     </div>
 
                     {/* Quantity & Line Total */}
-                    <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-border/50">
+                    <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-border/50">
                       {/* Quantity Selector */}
-                      <div className="flex items-center border border-border rounded-full bg-background p-0.5">
+                      <div className="flex items-center border border-border rounded-full bg-background p-0.5 min-h-[38px]">
                         <button
                           type="button"
                           onClick={() =>
@@ -256,7 +256,7 @@ export default function CartPage() {
                             )
                           }
                           disabled={item.quantity <= 1 || isItemUpdating || isCartActionLoading}
-                          className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors active:scale-95"
                           aria-label="Decrease quantity"
                         >
                           -
@@ -280,7 +280,7 @@ export default function CartPage() {
                             isItemUpdating ||
                             isCartActionLoading
                           }
-                          className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors active:scale-95"
                           aria-label="Increase quantity"
                         >
                           +

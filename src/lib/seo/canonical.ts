@@ -3,7 +3,7 @@
  */
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://lumera.store";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://penguinmart.com";
 
 export function getCanonicalUrl(path = ""): string {
   // Strip trailing query parameters, hash fragments, and tracking tokens

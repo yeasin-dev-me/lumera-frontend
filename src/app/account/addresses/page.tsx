@@ -106,7 +106,7 @@ export default function AddressesPage() {
             <label key={field} className="text-xs text-lumera-text-muted">
               <span className="block mb-1">{label}</span>
               <input
-                className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-lumera-text"
+                className="w-full rounded border border-border bg-background px-3 py-2 text-base sm:text-sm text-lumera-text min-h-[42px]"
                 value={(form[field] as string) || ""}
                 onChange={(event) => updateField(field, event.target.value)}
                 required={["full_name", "phone", "address_line1", "city", "country"].includes(field)}

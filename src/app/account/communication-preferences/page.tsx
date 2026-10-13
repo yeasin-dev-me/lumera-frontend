@@ -99,7 +99,7 @@ export default function CommunicationPreferencesPage() {
           Communication Preferences
         </h1>
         <p className="text-sm text-lumera-text-muted mt-1">
-          Manage how Lumera communicates with you regarding your orders, account status, and wholesale promotions.
+          Manage how Penguin Mart communicates with you regarding your orders, account status, and wholesale promotions.
         </p>
       </div>
 

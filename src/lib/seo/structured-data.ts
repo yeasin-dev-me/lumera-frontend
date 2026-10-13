@@ -19,7 +19,7 @@ export function generateProductJsonLd(product: ProductDetail, baseUrl = SITE_URL
     sku: product.sku,
     brand: {
       "@type": "Brand",
-      name: "Lumera",
+      name: "Penguin Mart",
     },
     offers: {
       "@type": "Offer",

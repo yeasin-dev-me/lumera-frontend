@@ -335,48 +335,98 @@ export default function CustomerOrderDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="relative pt-2 pb-1">
-            <div className="flex items-center justify-between relative">
-              {/* Connecting line */}
-              <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-0.5 bg-border z-0" />
-              <div
-                className="absolute top-1/2 left-0 -translate-y-1/2 h-0.5 bg-lumera-primary transition-all duration-300 z-0"
-                style={{
-                  width: `${(Math.max(0, currentStepIdx) / (LIFECYCLE_STEPS.length - 1)) * 100}%`,
-                }}
-              />
+          <div>
+            {/* Desktop / Tablet Horizontal Stepper */}
+            <div className="hidden sm:block relative pt-2 pb-1">
+              <div className="flex items-center justify-between relative">
+                {/* Connecting line */}
+                <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-0.5 bg-border z-0" />
+                <div
+                  className="absolute top-1/2 left-0 -translate-y-1/2 h-0.5 bg-lumera-primary transition-all duration-300 z-0"
+                  style={{
+                    width: `${(Math.max(0, currentStepIdx) / (LIFECYCLE_STEPS.length - 1)) * 100}%`,
+                  }}
+                />
 
+                {LIFECYCLE_STEPS.map((step, idx) => {
+                  const isCompleted = currentStepIdx > idx;
+                  const isCurrent = currentStepIdx === idx;
+
+                  return (
+                    <div
+                      key={step.key}
+                      className="flex flex-col items-center relative z-10 text-center"
+                    >
+                      <div
+                        className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-colors ${
+                          isCompleted
+                            ? "bg-lumera-primary text-white border-lumera-primary"
+                            : isCurrent
+                            ? "bg-surface-elevated text-lumera-primary border-lumera-primary ring-4 ring-lumera-primary/10"
+                            : "bg-surface-elevated text-lumera-text-muted border-border"
+                        }`}
+                      >
+                        {isCompleted ? <Check className="w-3.5 h-3.5" /> : idx + 1}
+                      </div>
+                      <span
+                        className={`text-[11px] mt-2 font-medium max-w-[70px] leading-tight ${
+                          isCurrent
+                            ? "text-foreground font-semibold"
+                            : isCompleted
+                            ? "text-foreground"
+                            : "text-lumera-text-muted"
+                        }`}
+                      >
+                        {step.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Mobile Vertical Stepper (for 80% phone users) */}
+            <div className="sm:hidden space-y-3 pt-1">
               {LIFECYCLE_STEPS.map((step, idx) => {
                 const isCompleted = currentStepIdx > idx;
                 const isCurrent = currentStepIdx === idx;
 
                 return (
-                  <div
-                    key={step.key}
-                    className="flex flex-col items-center relative z-10 text-center"
-                  >
+                  <div key={step.key} className="flex items-center gap-3">
                     <div
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-colors ${
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold border-2 shrink-0 ${
                         isCompleted
                           ? "bg-lumera-primary text-white border-lumera-primary"
                           : isCurrent
-                          ? "bg-surface-elevated text-lumera-primary border-lumera-primary ring-4 ring-lumera-primary/10"
+                          ? "bg-surface-elevated text-lumera-primary border-lumera-primary ring-4 ring-lumera-primary/20"
                           : "bg-surface-elevated text-lumera-text-muted border-border"
                       }`}
                     >
                       {isCompleted ? <Check className="w-3.5 h-3.5" /> : idx + 1}
                     </div>
-                    <span
-                      className={`text-[11px] mt-2 font-medium max-w-[70px] leading-tight ${
-                        isCurrent
-                          ? "text-foreground font-semibold"
-                          : isCompleted
-                          ? "text-foreground"
-                          : "text-lumera-text-muted"
-                      }`}
-                    >
-                      {step.label}
-                    </span>
+                    <div className="flex-1 min-w-0">
+                      <span
+                        className={`text-xs block ${
+                          isCurrent
+                            ? "text-foreground font-bold"
+                            : isCompleted
+                            ? "text-foreground font-medium"
+                            : "text-lumera-text-muted"
+                        }`}
+                      >
+                        {step.label}
+                      </span>
+                    </div>
+                    {isCurrent && (
+                      <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-lumera-primary/10 text-lumera-primary">
+                        Current
+                      </span>
+                    )}
+                    {isCompleted && (
+                      <span className="text-[10px] text-emerald-600 font-medium">
+                        Completed
+                      </span>
+                    )}
                   </div>
                 );
               })}

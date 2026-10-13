@@ -84,10 +84,10 @@ export default function StorefrontHomePage() {
     backendConfig?.announcement_text;
 
   return (
-    <div className="space-y-16 py-4">
+    <div className="space-y-10 sm:space-y-16 py-2 sm:py-4">
       {/* Dynamic Announcement Bar */}
       {announcement && (
-        <div className="rounded-full bg-lumera-cream/80 border border-lumera-primary/20 px-4 py-2 flex items-center justify-center gap-2 text-xs text-lumera-primary font-medium shadow-sm max-w-3xl mx-auto">
+        <div className="rounded-full bg-lumera-cream/80 border border-lumera-primary/20 px-3 sm:px-4 py-2 flex items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-lumera-primary font-medium shadow-sm max-w-3xl mx-auto text-center">
           <Megaphone className="w-3.5 h-3.5 text-lumera-primary shrink-0" />
           <span className="truncate">{announcement}</span>
           {homeContent?.announcement?.cta_url && homeContent?.announcement?.cta_label && (
@@ -103,32 +103,32 @@ export default function StorefrontHomePage() {
 
       {/* Hero Section — CMS Driven with Botanical Fallback */}
       {homeContent?.hero ? (
-        <section className="relative overflow-hidden rounded-3xl bg-surface border border-border/70 p-8 sm:p-12 lg:p-16 max-w-6xl mx-auto shadow-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div className="space-y-6 text-left">
-              <Badge variant="accent" className="px-4 py-1 text-xs">
+        <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-surface border border-border/70 p-5 sm:p-10 lg:p-16 max-w-6xl mx-auto shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-center">
+            <div className="space-y-4 sm:space-y-6 text-left">
+              <Badge variant="accent" className="px-3 sm:px-4 py-1 text-[11px] sm:text-xs">
                 Featured Editorial
               </Badge>
-              <h1 className="font-serif text-3xl sm:text-5xl font-semibold tracking-tight text-lumera-text leading-tight">
+              <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-lumera-text leading-tight">
                 {homeContent.hero.title}
               </h1>
               {homeContent.hero.body && (
-                <p className="text-lumera-text-muted text-sm sm:text-base leading-relaxed">
+                <p className="text-lumera-text-muted text-xs sm:text-base leading-relaxed">
                   {homeContent.hero.body}
                 </p>
               )}
-              <div className="pt-2 flex items-center gap-4">
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <Link
                   href={homeContent.hero.cta_url || "/products"}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-lumera-primary text-white text-sm font-semibold hover:bg-lumera-primary-hover shadow-md transition-all hover:scale-105"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-lumera-primary text-white text-xs sm:text-sm font-semibold hover:bg-lumera-primary-hover shadow-md transition-all active:scale-95 text-center"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  {homeContent.hero.cta_label || "Explore Collection"}
+                  <span>{homeContent.hero.cta_label || "Explore Collection"}</span>
                 </Link>
               </div>
             </div>
             {homeContent.hero.image_url && (
-              <div className="relative aspect-video lg:aspect-square rounded-2xl overflow-hidden bg-muted/30 border border-border">
+              <div className="relative aspect-[16/10] sm:aspect-video lg:aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-muted/30 border border-border">
                 <img
                   src={homeContent.hero.image_url}
                   alt={homeContent.hero.alt_text || homeContent.hero.title}
@@ -139,24 +139,24 @@ export default function StorefrontHomePage() {
           </div>
         </section>
       ) : (
-        <section className="text-center py-12 max-w-4xl mx-auto space-y-6">
-          <Badge variant="accent" className="px-4 py-1 text-xs">
+        <section className="text-center py-6 sm:py-12 max-w-4xl mx-auto space-y-4 sm:space-y-6 px-2">
+          <Badge variant="accent" className="px-3 sm:px-4 py-1 text-[11px] sm:text-xs">
             Clean Botanical Formulations
           </Badge>
-          <h1 className="font-serif text-4xl sm:text-6xl font-semibold tracking-tight text-lumera-text leading-tight">
+          <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-lumera-text leading-tight">
             Pure botanicals for luminous, healthy skin.
           </h1>
-          <p className="text-lumera-text-muted text-base sm:text-lg max-w-2xl mx-auto">
+          <p className="text-lumera-text-muted text-xs sm:text-base max-w-2xl mx-auto">
             Thoughtfully crafted formulas designed to nurture and fortify your skin barrier using
             clinically validated natural actives.
           </p>
-          <div className="pt-2 flex items-center justify-center gap-4">
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-lumera-primary text-white text-sm font-semibold hover:bg-lumera-primary-hover shadow-md transition-all hover:scale-105"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-lumera-primary text-white text-xs sm:text-sm font-semibold hover:bg-lumera-primary-hover shadow-md transition-all active:scale-95 text-center"
             >
               <ShoppingBag className="w-4 h-4" />
-              Explore Catalog
+              <span>Explore Catalog</span>
             </Link>
           </div>
         </section>
@@ -204,32 +204,32 @@ export default function StorefrontHomePage() {
       {/* Featured Categories Grid */}
       {categories.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
-              <h2 className="font-serif text-2xl font-semibold text-foreground">Shop by Category</h2>
-              <p className="text-xs text-lumera-text-muted mt-1">
+              <h2 className="font-serif text-xl sm:text-2xl font-semibold text-foreground">Shop by Category</h2>
+              <p className="text-[11px] sm:text-xs text-lumera-text-muted mt-0.5 sm:mt-1">
                 Targeted botanical treatments for every skin need
               </p>
             </div>
             <Link
               href="/products"
-              className="text-xs font-semibold text-lumera-primary flex items-center gap-1 hover:underline"
+              className="text-xs font-semibold text-lumera-primary flex items-center gap-1 hover:underline shrink-0"
             >
               <span>View All</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
             {categories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/products?category=${cat.slug}`}
-                className="group flex flex-col items-center p-4 rounded-2xl border border-border/70 bg-card hover:border-lumera-primary/50 hover:shadow-lg transition-all text-center"
+                className="group flex flex-col items-center p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-border/70 bg-card hover:border-lumera-primary/50 hover:shadow-md transition-all text-center active:scale-95"
               >
-                <div className="w-12 h-12 rounded-full bg-lumera-cream flex items-center justify-center mb-3 text-lumera-primary font-serif font-bold text-lg group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-lumera-cream flex items-center justify-center mb-1.5 sm:mb-3 text-lumera-primary font-serif font-bold text-base sm:text-lg group-hover:scale-110 transition-transform shadow-inner">
                   {cat.name.charAt(0)}
                 </div>
-                <span className="font-serif text-sm font-medium text-foreground group-hover:text-lumera-primary transition-colors">
+                <span className="font-serif text-xs sm:text-sm font-medium text-foreground group-hover:text-lumera-primary transition-colors truncate w-full">
                   {cat.name}
                 </span>
               </Link>
@@ -241,24 +241,24 @@ export default function StorefrontHomePage() {
       {/* Featured Products */}
       {featuredProducts.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
-              <h2 className="font-serif text-2xl font-semibold text-foreground">
+              <h2 className="font-serif text-xl sm:text-2xl font-semibold text-foreground">
                 Featured Formulations
               </h2>
-              <p className="text-xs text-lumera-text-muted mt-1">
+              <p className="text-[11px] sm:text-xs text-lumera-text-muted mt-0.5 sm:mt-1">
                 Our most loved, skin-rebalancing botanical products
               </p>
             </div>
             <Link
               href="/products"
-              className="text-xs font-semibold text-lumera-primary flex items-center gap-1 hover:underline"
+              className="text-xs font-semibold text-lumera-primary flex items-center gap-1 hover:underline shrink-0"
             >
-              <span>See Full Catalog</span>
+              <span>Full Catalog</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

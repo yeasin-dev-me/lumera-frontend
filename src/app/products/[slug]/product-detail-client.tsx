@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { api } from "@/lib/api/client";
 import { useCart } from "@/lib/cart/cart-context";
+import { useToast } from "@/components/ui/Toast";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { Accordion } from "@/components/ui/Accordion";
 import { ProductDetail } from "@/types/catalog";
 import { Badge } from "@/components/ui/Badge";
 import { Alert } from "@/components/ui/Alert";
@@ -19,6 +23,9 @@ import {
   ShieldCheck,
   ShoppingBag,
   Heart,
+  Leaf,
+  Droplets,
+  RotateCcw,
 } from "lucide-react";
 
 export function ProductDetailClient({ initialProduct }: { initialProduct?: ProductDetail }) {
@@ -26,6 +33,7 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
   const slug = (params?.slug as string) || initialProduct?.slug;
 
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const toast = useToast();
 
   const [product, setProduct] = useState<ProductDetail | null>(initialProduct || null);
   const [activeImage, setActiveImage] = useState<string | null>(
@@ -65,6 +73,7 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
       const success = await addToCart(product.public_id, quantity);
       if (success) {
         setAddSuccess(true);
+        toast.success(`Added ${quantity} × ${product.name} to shopping bag.`);
         track("add_to_cart", {
           item_id: product.public_id,
           item_name: product.name,
@@ -75,7 +84,9 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
         setTimeout(() => setAddSuccess(false), 3000);
       }
     } catch (err: any) {
-      setActionError(err.message || "Failed to add product to cart.");
+      const msg = err.message || "Failed to add product to cart.";
+      setActionError(msg);
+      toast.error(msg);
     } finally {
       setIsAdding(false);
     }
@@ -87,8 +98,15 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
     setActionError(null);
     try {
       await toggleWishlist(product.public_id);
+      if (inWishlist) {
+        toast.info(`Removed ${product.name} from wishlist.`);
+      } else {
+        toast.success(`Saved ${product.name} to wishlist.`);
+      }
     } catch (err: any) {
-      setActionError(err.message || "Failed to update wishlist.");
+      const msg = err.message || "Failed to update wishlist.";
+      setActionError(msg);
+      toast.error(msg);
     } finally {
       setIsWishlisting(false);
     }
@@ -178,41 +196,31 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
     parseFloat(product.discount_price) < parseFloat(product.price);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {/* Breadcrumbs */}
-      <nav className="flex items-center gap-2 text-xs text-lumera-text-muted">
-        <Link href="/" className="hover:text-lumera-primary transition-colors">
-          Home
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/60" />
-        <Link href="/products" className="hover:text-lumera-primary transition-colors">
-          Products
-        </Link>
-        {product.category && (
-          <>
-            <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/60" />
-            <Link
-              href={`/products?category=${product.category.slug}`}
-              className="hover:text-lumera-primary transition-colors"
-            >
-              {product.category.name}
-            </Link>
-          </>
-        )}
-        <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/60" />
-        <span className="text-foreground font-medium truncate max-w-[200px]">{product.name}</span>
-      </nav>
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-28 md:pb-8">
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb
+        items={[
+          { label: "Products", href: "/products" },
+          ...(product.category
+            ? [{ label: product.category.name, href: `/products?category=${product.category.slug}` }]
+            : []),
+          { label: product.name },
+        ]}
+      />
 
       {/* Main product display */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
         {/* Gallery */}
-        <div className="space-y-4">
-          <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-card border border-border/70 flex items-center justify-center p-8 group">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-card border border-border/70 flex items-center justify-center group">
             {activeImage ? (
-              <img
+              <Image
                 src={activeImage}
                 alt={product.name}
-                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-contain p-6 sm:p-8 transition-transform duration-500 group-hover:scale-105"
+                priority
               />
             ) : (
               <div className="flex flex-col items-center justify-center text-lumera-text-muted/60 space-y-2">
@@ -224,22 +232,24 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
 
           {/* Thumbnails */}
           {product.images && product.images.length > 1 && (
-            <div className="flex items-center gap-3 overflow-x-auto pb-2">
+            <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
               {product.images.map((img) => (
                 <button
                   key={img.id}
                   type="button"
                   onClick={() => setActiveImage(img.image_url)}
-                  className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all p-1 bg-card shrink-0 ${
+                  className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all bg-card shrink-0 active:scale-95 ${
                     activeImage === img.image_url
                       ? "border-lumera-primary ring-2 ring-lumera-primary/20"
                       : "border-border hover:border-border/80"
                   }`}
                 >
-                  <img
+                  <Image
                     src={img.image_url}
                     alt={img.alt_text || product.name}
-                    className="w-full h-full object-contain"
+                    fill
+                    sizes="80px"
+                    className="object-contain p-1"
                   />
                 </button>
               ))}
@@ -327,21 +337,23 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
             <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               {/* Quantity selector */}
               {product.is_in_stock && (
-                <div className="flex items-center border border-border rounded-full bg-card px-3 py-1.5 self-start sm:self-auto">
+                <div className="flex items-center border border-border rounded-full bg-card px-3 py-1.5 self-start sm:self-auto min-h-[44px]">
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                     disabled={quantity <= 1 || isAdding}
-                    className="w-7 h-7 flex items-center justify-center text-lumera-text-muted hover:text-foreground disabled:opacity-30 text-base"
+                    className="w-8 h-8 flex items-center justify-center text-lumera-text-muted hover:text-foreground disabled:opacity-30 text-lg active:scale-95"
+                    aria-label="Decrease quantity"
                   >
                     -
                   </button>
-                  <span className="w-10 text-center font-mono text-sm font-medium">{quantity}</span>
+                  <span className="w-10 text-center font-mono text-sm font-semibold">{quantity}</span>
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.min(product.stock_quantity, q + 1))}
                     disabled={quantity >= product.stock_quantity || isAdding}
-                    className="w-7 h-7 flex items-center justify-center text-lumera-text-muted hover:text-foreground disabled:opacity-30 text-base"
+                    className="w-8 h-8 flex items-center justify-center text-lumera-text-muted hover:text-foreground disabled:opacity-30 text-lg active:scale-95"
+                    aria-label="Increase quantity"
                   >
                     +
                   </button>
@@ -353,7 +365,7 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
                 type="button"
                 onClick={handleAddToCart}
                 disabled={!product.is_in_stock || isAdding}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-lumera-primary text-white text-sm font-semibold hover:bg-lumera-primary-hover disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transition-all"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-lumera-primary text-white text-sm font-semibold hover:bg-lumera-primary-hover disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transition-all min-h-[44px] active:scale-95"
               >
                 {isAdding ? (
                   <>
@@ -373,7 +385,7 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
                 type="button"
                 onClick={handleToggleWishlist}
                 disabled={isWishlisting}
-                className={`p-3 rounded-full border transition-all ${
+                className={`min-w-[44px] min-h-[44px] p-3 rounded-full border transition-all flex items-center justify-center active:scale-95 ${
                   inWishlist
                     ? "bg-rose-50 text-rose-600 border-rose-200"
                     : "border-border text-lumera-text-muted hover:text-rose-500 hover:bg-muted"
@@ -386,7 +398,7 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
           </div>
 
           {/* Trust Guarantees */}
-          <div className="mt-8 rounded-2xl bg-muted/40 border border-border/60 p-5 flex flex-col gap-3 text-xs text-lumera-text-muted">
+          <div className="mt-8 rounded-2xl bg-muted/40 border border-border/60 p-4 sm:p-5 flex flex-col gap-3 text-xs text-lumera-text-muted">
             <div className="flex items-center gap-2.5">
               <ShieldCheck className="w-4 h-4 text-lumera-primary" />
               <span className="text-foreground font-medium">Dermatologist tested & cruelty-free</span>
@@ -397,6 +409,109 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Detailed Botanical Information & Accordions */}
+      <div className="pt-8 sm:pt-12 border-t border-border/80">
+        <h2 className="font-serif text-xl sm:text-2xl font-medium text-lumera-text mb-4">
+          Formulation & Clinical Details
+        </h2>
+        <div className="bg-surface rounded-2xl border border-border/80 p-5 sm:p-8 shadow-sm">
+          <Accordion
+            items={[
+              {
+                id: "actives",
+                title: "Active Botanical Compounds",
+                defaultOpen: true,
+                children: (
+                  <div className="space-y-3">
+                    <p>
+                      Formulated with certified biocompatible botanical extracts, cold-pressed seed lipids, and stabilized bio-peptides.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                      <div className="p-3 rounded-xl bg-surface-muted/60 border border-border/50">
+                        <span className="font-medium text-lumera-primary block text-xs">Bio-Identical Ceramides</span>
+                        <span className="text-[11px] text-lumera-text-muted">Fortifies epidermal cellular integrity</span>
+                      </div>
+                      <div className="p-3 rounded-xl bg-surface-muted/60 border border-border/50">
+                        <span className="font-medium text-lumera-primary block text-xs">Phyto-Antioxidants</span>
+                        <span className="text-[11px] text-lumera-text-muted">Guards against environmental oxidative stress</span>
+                      </div>
+                      <div className="p-3 rounded-xl bg-surface-muted/60 border border-border/50">
+                        <span className="font-medium text-lumera-primary block text-xs">Triple Hyaluronic Multi-Weight</span>
+                        <span className="text-[11px] text-lumera-text-muted">Deep cellular water retention</span>
+                      </div>
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                id: "ritual",
+                title: "How to Apply & Ritual Guidelines",
+                children: (
+                  <div className="space-y-2">
+                    <p>
+                      Dispense 3–4 drops or a pea-sized amount onto clean palms. Gently warm the formulation between fingertips and press into face, neck, and décolletage in upward sweeping motions.
+                    </p>
+                    <p className="text-xs text-lumera-text-muted italic">
+                      Recommended ritual sequence: Cleanser → Toner Mist → Active Serum → Barrier Cream → Facial Oil.
+                    </p>
+                  </div>
+                ),
+              },
+              {
+                id: "standards",
+                title: "Purity & Packaging Standards",
+                children: (
+                  <p>
+                    100% vegan, Leaping Bunny certified cruelty-free, and packaged in dark ultraviolet biophotonic glass. Preserves photolabile plant actives without parabens, synthetic perfumes, petrochemicals, or sulfates.
+                  </p>
+                ),
+              },
+              {
+                id: "shipping",
+                title: "Complimentary Delivery & 30-Day Guarantee",
+                children: (
+                  <p>
+                    Complimentary standard ground delivery on all domestic orders over $75. If your skin does not love this formulation, return the bottle within 30 days for a full refund or exchange.
+                  </p>
+                ),
+              },
+            ]}
+          />
+        </div>
+      </div>
+
+      {/* Mobile Sticky Add-to-Cart Bar (for 80% phone users) */}
+      <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border px-4 py-2.5 shadow-lg flex items-center justify-between gap-3">
+        <div className="flex flex-col min-w-0">
+          <span className="font-serif text-base font-bold text-lumera-primary">
+            ${parseFloat(product.effective_price).toFixed(2)}
+          </span>
+          <span className="text-[10px] text-lumera-text-muted truncate">
+            {product.is_in_stock ? "In Stock" : "Out of stock"}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={!product.is_in_stock || isAdding}
+          className="flex-1 max-w-[200px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-lumera-primary text-white text-xs font-semibold hover:bg-lumera-primary-hover disabled:opacity-50 transition-all shadow-sm active:scale-95"
+        >
+          {isAdding ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : addSuccess ? (
+            <>
+              <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+              <span>Added!</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span>{product.is_in_stock ? "Add to Bag" : "Unavailable"}</span>
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

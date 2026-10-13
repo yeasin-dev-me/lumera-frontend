@@ -152,7 +152,7 @@ export default function OrderConfirmationPage() {
         </h1>
         <p className="text-xs sm:text-sm text-lumera-text-muted max-w-md mx-auto">
           {isPaid
-            ? "Thank you! Your payment has been authoritatively verified by Lumera servers."
+            ? "Thank you! Your payment has been authoritatively verified by Penguin Mart servers."
             : "Your order snapshot has been recorded. Please complete payment using the secure gateway below."}
         </p>
         <div className="pt-2 flex flex-wrap items-center justify-center gap-2">

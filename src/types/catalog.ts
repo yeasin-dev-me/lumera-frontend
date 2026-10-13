@@ -62,6 +62,7 @@ export interface PaginatedProducts {
 export interface ProductListParams {
   category?: string;
   ordering?: string;
+  search?: string;
   page?: number;
   page_size?: number;
 }

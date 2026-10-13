@@ -194,6 +194,7 @@ class StorefrontApiClient {
     const searchParams = new URLSearchParams();
     if (params?.category) searchParams.set("category", params.category);
     if (params?.ordering) searchParams.set("ordering", params.ordering);
+    if (params?.search) searchParams.set("search", params.search);
     if (params?.page) searchParams.set("page", params.page.toString());
     if (params?.page_size) searchParams.set("page_size", params.page_size.toString());
 

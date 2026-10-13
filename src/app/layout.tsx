@@ -1,33 +1,62 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { CartProvider } from "@/lib/cart/cart-context";
+import { ToastProvider } from "@/components/ui/Toast";
 import { Navbar } from "@/components/layout/Navbar";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { Footer } from "@/components/layout/Footer";
 
 import { SITE_URL } from "@/lib/seo/canonical";
+
+const serifFont = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+});
+
+const sansFont = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#102A43",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Lumera | Modern Skincare & Pure Beauty",
-    template: "%s | Lumera Skincare",
+    default: "Penguin Mart | Skin Care & Beauty",
+    template: "%s | Penguin Mart",
   },
-  description: "Experience modern, thoughtful skincare engineered for radiance and purity.",
+  description: "Penguin Mart — Your premier destination for pure, thoughtful skincare & beauty.",
+  icons: {
+    icon: "/penguin-mart-logo.jpg",
+    apple: "/penguin-mart-logo.jpg",
+  },
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Lumera | Modern Skincare & Pure Beauty",
-    description: "Experience modern, thoughtful skincare engineered for radiance and purity.",
+    title: "Penguin Mart | Skin Care & Beauty",
+    description: "Penguin Mart — Your premier destination for pure, thoughtful skincare & beauty.",
     url: SITE_URL,
-    siteName: "Lumera Skincare",
+    siteName: "Penguin Mart",
     locale: "en_US",
     type: "website",
+    images: ["/penguin-mart-logo.jpg"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lumera | Modern Skincare & Pure Beauty",
-    description: "Experience modern, thoughtful skincare engineered for radiance and purity.",
+    title: "Penguin Mart | Skin Care & Beauty",
+    description: "Penguin Mart — Your premier destination for pure, thoughtful skincare & beauty.",
+    images: ["/penguin-mart-logo.jpg"],
   },
   robots: {
     index: true,
@@ -41,24 +70,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col justify-between">
+    <html lang="en" className={`${serifFont.variable} ${sansFont.variable} overflow-x-hidden`}>
+      <body className="min-h-screen flex flex-col justify-between overflow-x-hidden antialiased">
         <AuthProvider>
           <CartProvider>
-            <Navbar />
-            <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              {children}
-            </main>
+            <ToastProvider>
+              <Navbar />
+              <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pb-24 md:pb-8">
+                {children}
+              </main>
+              <BottomNav />
+            </ToastProvider>
           </CartProvider>
         </AuthProvider>
 
-        {/* Footer */}
-        <footer className="border-t border-border bg-surface-muted py-8 text-center text-xs text-lumera-text-muted">
-          <div className="max-w-7xl mx-auto px-4">
-            <p className="font-serif text-base font-medium text-lumera-text mb-1">LUMERA SKINCARE</p>
-            <p>© {new Date().getFullYear()} Lumera E-Commerce Platform. Architectural Foundation.</p>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );

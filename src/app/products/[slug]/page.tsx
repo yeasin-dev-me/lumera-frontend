@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const description =
       product.seo_description ||
       product.description ||
-      `Experience ${product.name} botanical formulation at Lumera.`;
+      `Experience ${product.name} botanical formulation at Penguin Mart.`;
     const image = product.images?.[0]?.image_url;
 
     return {
