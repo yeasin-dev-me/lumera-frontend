@@ -70,7 +70,17 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
     setActionError(null);
     setAddSuccess(false);
     try {
-      const success = await addToCart(product.public_id, quantity);
+      const success = await addToCart(product.public_id, quantity, {
+        public_id: product.public_id,
+        name: product.name,
+        slug: product.slug,
+        primary_image: activeImage || product.images?.[0]?.image_url || null,
+        price: product.price,
+        discount_price: product.discount_price,
+        effective_price: product.effective_price,
+        stock_quantity: product.stock_quantity,
+        is_in_stock: product.is_in_stock,
+      });
       if (success) {
         setAddSuccess(true);
         toast.success(`Added ${quantity} × ${product.name} to shopping bag.`);

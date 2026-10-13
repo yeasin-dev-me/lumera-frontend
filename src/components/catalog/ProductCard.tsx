@@ -33,7 +33,17 @@ export function ProductCard({ product }: ProductCardProps) {
     setIsAdding(true);
     setCardError(null);
     try {
-      const success = await addToCart(product.public_id, 1);
+      const success = await addToCart(product.public_id, 1, {
+        public_id: product.public_id,
+        name: product.name,
+        slug: product.slug,
+        primary_image: product.primary_image,
+        price: product.price,
+        discount_price: product.discount_price,
+        effective_price: product.effective_price,
+        stock_quantity: product.stock_quantity,
+        is_in_stock: product.is_in_stock,
+      });
       if (success) {
         setJustAdded(true);
         toast.success(`Added ${product.name} to shopping bag.`);

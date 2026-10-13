@@ -11,9 +11,17 @@ export interface ShippingAddressInput {
   country?: string;
 }
 
+export interface OrderItemInput {
+  product_id: string;
+  quantity: number;
+}
+
 export interface OrderCreateInput {
   shipping_address: ShippingAddressInput;
   customer_notes?: string;
+  items?: OrderItemInput[];
+  guest_email?: string;
+  payment_method?: "cod" | "online" | string;
 }
 
 export interface CheckoutCustomerSummary {
@@ -96,7 +104,9 @@ export interface OrderDetail {
   discount_total: string;
   total: string;
   shipping_address: ShippingAddressInput;
-  customer_notes: string;
+  customer_notes?: string;
+  payment_method?: string;
+  guest_email?: string;
   items: OrderItemDetail[];
   status_history: OrderStatusHistoryItem[];
   courier?: string | null;

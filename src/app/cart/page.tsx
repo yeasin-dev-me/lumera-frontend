@@ -46,35 +46,7 @@ export default function CartPage() {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="max-w-2xl mx-auto py-16 px-4 text-center">
-        <div className="w-16 h-16 rounded-full bg-lumera-primary/10 text-lumera-primary flex items-center justify-center mx-auto mb-6">
-          <Lock className="w-8 h-8" />
-        </div>
-        <h1 className="font-serif text-3xl font-semibold text-foreground mb-3">
-          Sign In to Access Your Cart
-        </h1>
-        <p className="text-sm text-lumera-text-muted mb-8 max-w-md mx-auto">
-          Your shopping cart is securely protected. Please sign in to view your items, check real-time stock, and continue shopping.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            href="/login?redirect=cart"
-            className="w-full sm:w-auto px-6 py-3 rounded-full bg-lumera-primary text-white text-sm font-semibold hover:bg-lumera-primary-hover transition-colors shadow-sm"
-          >
-            Sign In to Account
-          </Link>
-          <Link
-            href="/products"
-            className="w-full sm:w-auto px-6 py-3 rounded-full border border-border text-foreground text-sm font-semibold hover:bg-muted transition-colors"
-          >
-            Explore Catalog
-          </Link>
-        </div>
-      </div>
-    );
-  }
+
 
   const items = cart?.items || [];
   const isEmpty = items.length === 0;
@@ -133,6 +105,23 @@ export default function CartPage() {
           </button>
         )}
       </div>
+
+      {!isAuthenticated && !isEmpty && (
+        <div className="mt-4 p-3.5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-800 dark:text-emerald-300">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold px-2 py-0.5 rounded-full bg-emerald-200/60 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100 text-[10px] uppercase tracking-wide">
+              Fast Order
+            </span>
+            <span>No account required! You can confirm your order directly as a guest.</span>
+          </div>
+          <Link
+            href="/login?redirect=cart"
+            className="shrink-0 text-emerald-900 dark:text-emerald-200 underline font-medium hover:opacity-80"
+          >
+            Sign in (Optional)
+          </Link>
+        </div>
+      )}
 
       {/* Global Error Banner */}
       {error && (

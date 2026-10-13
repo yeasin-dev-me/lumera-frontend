@@ -61,15 +61,10 @@ export default function OrderConfirmationPage() {
   }, [orderId]);
 
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-
     if (orderId) {
       fetchOrderAndPayment();
     }
-  }, [orderId, isAuthenticated, authLoading, router, fetchOrderAndPayment]);
+  }, [orderId, fetchOrderAndPayment]);
 
   const handleInitiatePayment = async () => {
     if (!order) return;
@@ -118,6 +113,7 @@ export default function OrderConfirmationPage() {
     );
   }
 
+  const isCod = order.payment_method === "cod";
   const isPaid = order.payment_status === "paid" || paymentStatus?.status === "paid";
   const isFailed = order.payment_status === "failed" || paymentStatus?.status === "failed";
   const isProcessing = paymentStatus?.status === "processing";
@@ -128,14 +124,14 @@ export default function OrderConfirmationPage() {
       <div className="text-center space-y-3">
         <div
           className={`h-16 w-16 rounded-full flex items-center justify-center mx-auto shadow-sm ${
-            isPaid
+            isPaid || isCod
               ? "bg-emerald-100 text-emerald-600"
               : isFailed
               ? "bg-rose-100 text-rose-600"
               : "bg-amber-100 text-amber-600"
           }`}
         >
-          {isPaid ? (
+          {isPaid || isCod ? (
             <CheckCircle2 className="w-8 h-8" />
           ) : isFailed ? (
             <AlertTriangle className="w-8 h-8" />
@@ -144,33 +140,39 @@ export default function OrderConfirmationPage() {
           )}
         </div>
         <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-foreground">
-          {isPaid
+          {isCod
+            ? "Order Successfully Confirmed!"
+            : isPaid
             ? "Payment Confirmed!"
             : isFailed
             ? "Payment Required"
-            : "Order Placed — Payment Pending"}
+            : "Order Placed — Online Payment"}
         </h1>
         <p className="text-xs sm:text-sm text-lumera-text-muted max-w-md mx-auto">
-          {isPaid
+          {isCod
+            ? "Thank you! Your order has been registered and is being prepared for home delivery. Payment will be collected in cash at your doorstep."
+            : isPaid
             ? "Thank you! Your payment has been authoritatively verified by Penguin Mart servers."
             : "Your order snapshot has been recorded. Please complete payment using the secure gateway below."}
         </p>
         <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
           <Badge variant="primary">Order #{order.order_number}</Badge>
-          <span className="text-xs bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            Order: {order.status}
+          <span className="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+            Status: {order.status}
           </span>
           <span
             className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${
               isPaid
                 ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                : isCod
+                ? "bg-amber-50 text-amber-800 border border-amber-200"
                 : isFailed
                 ? "bg-rose-50 text-rose-800 border border-rose-200"
                 : "bg-sky-50 text-sky-800 border border-sky-200"
             }`}
           >
-            Payment: {paymentStatus?.status || order.payment_status}
+            {isCod ? "Cash on Delivery" : `Payment: ${paymentStatus?.status || order.payment_status}`}
           </span>
         </div>
       </div>
@@ -180,10 +182,10 @@ export default function OrderConfirmationPage() {
         <div className="flex items-center justify-between pb-4 border-b border-border">
           <h2 className="font-serif text-lg font-semibold text-foreground flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-lumera-primary" />
-            <span>Financial Settlement</span>
+            <span>Financial & Payment Details</span>
           </h2>
           <span className="text-xs font-mono font-medium text-lumera-text-muted">
-            Due: ${order.total} {order.currency}
+            Payable Amount: ${order.total} {order.currency}
           </span>
         </div>
 
@@ -195,7 +197,21 @@ export default function OrderConfirmationPage() {
           </div>
         )}
 
-        {isPaid ? (
+        {isCod ? (
+          <div className="mt-4 bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-4 space-y-2 text-xs">
+            <div className="flex items-center gap-2 text-emerald-900 font-semibold text-sm">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <span>Cash on Delivery (ক্যাশ অন ডেলিভারি)</span>
+            </div>
+            <p className="text-emerald-800 leading-relaxed">
+              No online advance payment needed. Please pay the exact amount of <strong>${order.total} {order.currency}</strong> directly to our delivery courier upon parcel arrival.
+            </p>
+            <div className="pt-2 border-t border-emerald-200 text-emerald-700 flex items-center gap-2 text-[11px]">
+              <Truck className="w-3.5 h-3.5" />
+              <span>Our team may give you a quick phone call at <strong>{order.shipping_address.phone}</strong> to verify delivery timing.</span>
+            </div>
+          </div>
+        ) : isPaid ? (
           <div className="mt-4 bg-emerald-50/60 border border-emerald-200/80 rounded-lg p-4 space-y-2 text-xs">
             <div className="flex items-center gap-2 text-emerald-800 font-semibold text-sm">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
@@ -221,12 +237,6 @@ export default function OrderConfirmationPage() {
                 <div>
                   <span className="text-emerald-600 block text-[11px]">Gateway:</span>
                   <span className="uppercase">{paymentStatus.gateway}</span>
-                </div>
-              )}
-              {paymentStatus?.method && (
-                <div>
-                  <span className="text-emerald-600 block text-[11px]">Method:</span>
-                  <span>{paymentStatus.method}</span>
                 </div>
               )}
             </div>
